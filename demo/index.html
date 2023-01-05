@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>ONNX Pyodide/Web Demo</title>
+</head>
+<body>
+  <p>Open browser console to see result</p>
+  
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js"></script>
+  <script type="module">
+    window.pyodide = await loadPyodide();
+    await pyodide.loadPackage("micropip");
+
+    let tokenizerJsonText = await fetch("./model.onnx").then(r => r.text())
+    pyodide.FS.writeFile("/model.onnx", tokenizerJsonText, { encoding: "utf8" });
+
+    console.log(await pyodide.runPythonAsync(`
+      import sys
+      print(sys.version)
+      
+      import micropip
+      await micropip.install('./onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl')
+
+      import onnx
+
+      # onnx_model is an in-memory ModelProto
+      onnx_model = onnx.load("/model.onnx")
+    `));
+  </script>
+</body>
+</html>
