@@ -15,6 +15,7 @@ pip install pyodide-build
 # install emscripten
 git clone https://github.com/emscripten-core/emsdk
 cd emsdk
+pyodide config get emscripten_version  # this line is needed due to: https://github.com/pyodide/pyodide/issues/3430
 PYODIDE_EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version)
 ./emsdk install ${PYODIDE_EMSCRIPTEN_VERSION}
 ./emsdk activate ${PYODIDE_EMSCRIPTEN_VERSION}
