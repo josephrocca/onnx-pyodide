@@ -35,6 +35,6 @@ cd ../../
 
 pip install "pybind11[global]"
 export PATH="$(pwd)/protobuf/build_source:$PATH"
-export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=ON -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source -DProtobuf_LITE_LIBRARY=$(pwd)/protobuf/build_source/libprotobuf-lite.a -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11"
+export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=ON -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source -DProtobuf_LITE_LIBRARY=$(pwd)/protobuf/build_source/libprotobuf-lite.a -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")"
 pyodide build
 ```
