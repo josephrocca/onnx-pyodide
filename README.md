@@ -5,7 +5,7 @@ The `onnx` Python library (not `onnxruntime`, to be clear) running in Pyodide - 
 # Build Instructions:
 
 ```bash
-git clone --single-branch v21.12 https://github.com/onnx/onnx
+git clone --branch v21.12 https://github.com/onnx/onnx
 cd onnx
 git submodule update --init --recursive
 
