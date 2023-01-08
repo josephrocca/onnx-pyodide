@@ -3,7 +3,7 @@ The `onnx` Python library (not `onnxruntime`, to be clear) running in Pyodide - 
 
 # Progress:
 
-### Version 1
+## Version 1
 
 Demo: https://josephrocca.github.io/onnx-pyodide/demo/v1
 
@@ -58,9 +58,9 @@ ImportError: dynamic module does not define module export function (PyInit_onnx_
 ```
 </details>
   
-### Version 2
+## Version 2
   
-Demo: https://josephrocca.github.io/onnx-pyodide/demo/v2
+Demo: ...
 
 <details>
   <summary><b>Click for build instructions</b></summary>
@@ -131,72 +131,12 @@ cd ../
 ```
 </details>
   
-I think the only significant difference in the build process was changing `-DONNX_USE_LITE_PROTO` from `ON` to `OFF`, but there could be others.
-
-Crashes with this error:
 
 <details>
-  <summary><b>Click for error logs</b></summary>
+  <summary><b>...</b></summary>
   
 ```
-Uncaught PythonError: Traceback (most recent call last):
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-  File "/lib/python3.10/asyncio/tasks.py", line 234, in __step
-    result = coro.throw(exc)
-  File "/lib/python3.10/_pyodide/_base.py", line 531, in eval_code_async
-    await CodeRunner(
-  File "/lib/python3.10/_pyodide/_base.py", line 359, in run_async
-    await coroutine
-  File "<exec>", line 7, in <module>
-  File "/lib/python3.10/site-packages/micropip/_micropip.py", line 600, in install
-    await gather(*wheel_promises)
-  File "/lib/python3.10/asyncio/futures.py", line 284, in __await__
-    yield self  # This tells Task to wait for completion.
-  File "/lib/python3.10/asyncio/tasks.py", line 304, in __wakeup
-    future.result()
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-  File "/lib/python3.10/asyncio/tasks.py", line 234, in __step
-    result = coro.throw(exc)
-  File "/lib/python3.10/site-packages/micropip/_micropip.py", line 247, in install
-    await self.load_libraries(target)
-  File "/lib/python3.10/site-packages/micropip/_micropip.py", line 238, in load_libraries
-    await gather(*map(lambda dynlib: loadDynlib(dynlib, False), dynlibs))
-  File "/lib/python3.10/asyncio/futures.py", line 284, in __await__
-    yield self  # This tells Task to wait for completion.
-  File "/lib/python3.10/asyncio/tasks.py", line 304, in __wakeup
-    future.result()
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-pyodide.JsException: TypeError: Cannot read properties of undefined (reading 'apply')
 
-    at new_error (pyodide.asm.js:10:179954)
-    at pyodide.asm.wasm:0xe78a8
-    at pyodide.asm.wasm:0xee978
-    at method_call_trampoline (pyodide.asm.js:10:229349)
-    at pyodide.asm.wasm:0x1313a1
-    at pyodide.asm.wasm:0x202469
-    at pyodide.asm.wasm:0x16ca9e
-    at pyodide.asm.wasm:0x1318b5
-    at pyodide.asm.wasm:0x1319af
-    at pyodide.asm.wasm:0x131a52
-    at pyodide.asm.wasm:0x1eb770
-    at pyodide.asm.wasm:0x1e579f
-    at pyodide.asm.wasm:0x131a95
-    at pyodide.asm.wasm:0x1ed552
-    at pyodide.asm.wasm:0x1eb1b2
-    at pyodide.asm.wasm:0x1e579f
-    at pyodide.asm.wasm:0x131a95
-    at pyodide.asm.wasm:0xee1af
-    at pyodide.asm.wasm:0xee050
-    at Module.callPyObjectKwargs (pyodide.asm.js:10:123403)
-    at Module.callPyObject (pyodide.asm.js:10:123781)
-    at wrapper (pyodide.asm.js:10:219389)
 ```
 </details>
-
-* `wasm-objdump --details onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-details.txt
-* `wasm-objdump --full-contents onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-full-contents.txt
-* `wasm-objdump --headers onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-headers.txt
 
