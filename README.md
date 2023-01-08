@@ -101,7 +101,7 @@ curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40e
 # currently the only edit needed for CMakeLists.txt is to remove `,--exclude-libs,ALL` from line 492 - see explanation here: https://github.com/pyodide/pyodide/issues/3427#issuecomment-1374422693
 curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/ef697fb45c5a00523c266b5265abb11cef2810e7/CMakeLists.txt > CMakeLists.txt
 
-export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=OFF -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") -DCMAKE_PROJECT_INCLUDE=$(pwd)/overwriteProp.cmake -DCMAKE_C_FLAGS=\"-fPIC\" -DCMAKE_CXX_FLAGS=\"-fPIC\""
+export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=OFF -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source/libprotobuf.a -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") -DCMAKE_PROJECT_INCLUDE=$(pwd)/overwriteProp.cmake -DCMAKE_C_FLAGS=\"-fPIC\" -DCMAKE_CXX_FLAGS=\"-fPIC\""
 
 # build
 pyodide build --exports whole_archive
