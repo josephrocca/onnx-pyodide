@@ -9,8 +9,8 @@ git clone --branch v21.12 https://github.com/onnx/onnx
 cd onnx
 git submodule update --init --recursive
 
-# pyodide setup:
 pip install pyodide-build
+pip install "pybind11[global]"
 
 # install emscripten
 git clone https://github.com/emscripten-core/emsdk
@@ -32,9 +32,12 @@ cmake ../cmake -Dprotobuf_BUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCM
 make -j$(nproc)
 sudo make install
 cd ../../
-
-pip install "pybind11[global]"
 export PATH="$(pwd)/protobuf/build_source:$PATH"
-export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=ON -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source -DProtobuf_LITE_LIBRARY=$(pwd)/protobuf/build_source/libprotobuf-lite.a -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")"
-pyodide build
+
+curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/509fab5dc03bec8aa598e7fbce16330de94893ca/overwriteProp.cmake > overwriteProp.cmake
+curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/ef697fb45c5a00523c266b5265abb11cef2810e7/CMakeLists.txt > CMakeLists.txt  # currently the only edit is to remove `,--exclude-libs,ALL` from line 492 - see explanation here: https://github.com/pyodide/pyodide/issues/3427#issuecomment-1374422693
+
+export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=OFF -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") -DCMAKE_PROJECT_INCLUDE=$(pwd)/overwriteProp.cmake -DCMAKE_C_FLAGS=\"-fPIC\" -DCMAKE_CXX_FLAGS=\"-fPIC\""
+
+pyodide build --exports whole_archive
 ```
