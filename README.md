@@ -60,7 +60,7 @@ ImportError: dynamic module does not define module export function (PyInit_onnx_
   
 ## Version 2
 
-In this version I tried building the protobuf lib with emscripten. I was originally trying to get onnx to use the separate micropip-installed protobuf.
+In this version I tried building the `protobuf` lib with emscripten. I was originally trying to get `onnx` to use the separate micropip-installed `protobuf`. Note that the compiled protobuf wasm file in the `v2` directory is called `libprotobuf.so`.
   
 Demo: https://josephrocca.github.io/onnx-pyodide/demo/v2
 
