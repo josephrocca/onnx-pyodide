@@ -1,73 +1,11 @@
 # ONNX Pyodide
-The `onnx` Python library (not `onnxruntime`, to be clear) running in Pyodide - WIP
+The `onnx` Python library (not `onnxruntime`, to be clear) running in Pyodide.
 
-# Progress:
+Demo: https://josephrocca.github.io/onnx-pyodide/demo/v3
 
-## Version 1
-
-Demo: https://josephrocca.github.io/onnx-pyodide/demo/v1
-
-Shows this warning:
+# Build Instructions
 
 ```
-Failed to load dynlib /lib/python3.10/site-packages/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so. We probably just tried to load a linux .so file or something.
-```
-
-And then crashes with this error:
-
-<details>
-  <summary><b>Click for error logs</b></summary>
-  
-```
-Uncaught PythonError: Traceback (most recent call last):
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-  File "/lib/python3.10/asyncio/tasks.py", line 232, in __step
-    result = coro.send(None)
-  File "/lib/python3.10/_pyodide/_base.py", line 531, in eval_code_async
-    await CodeRunner(
-  File "/lib/python3.10/_pyodide/_base.py", line 359, in run_async
-    await coroutine
-  File "<exec>", line 9, in <module>
-  File "/lib/python3.10/site-packages/onnx/__init__.py", line 6, in <module>
-    from .onnx_cpp2py_export import ONNX_ML  # noqa
-ImportError: dynamic module does not define module export function (PyInit_onnx_cpp2py_export)
-
-    at new_error (pyodide.asm.js:10:179954)
-    at pyodide.asm.wasm:0xe78a8
-    at pyodide.asm.wasm:0xee978
-    at method_call_trampoline (pyodide.asm.js:10:229349)
-    at pyodide.asm.wasm:0x1313a1
-    at pyodide.asm.wasm:0x202469
-    at pyodide.asm.wasm:0x16ca9e
-    at pyodide.asm.wasm:0x1318b5
-    at pyodide.asm.wasm:0x1319af
-    at pyodide.asm.wasm:0x131a52
-    at pyodide.asm.wasm:0x1eb770
-    at pyodide.asm.wasm:0x1e579f
-    at pyodide.asm.wasm:0x131a95
-    at pyodide.asm.wasm:0x1ed552
-    at pyodide.asm.wasm:0x1eb1b2
-    at pyodide.asm.wasm:0x1e579f
-    at pyodide.asm.wasm:0x131a95
-    at pyodide.asm.wasm:0xee1af
-    at pyodide.asm.wasm:0xee050
-    at Module.callPyObjectKwargs (pyodide.asm.js:10:123403)
-    at Module.callPyObject (pyodide.asm.js:10:123781)
-    at wrapper (pyodide.asm.js:10:219389)
-```
-</details>
-  
-## Version 2
-
-In this version I tried building the `protobuf` lib with emscripten. I was originally trying to get `onnx` to use the separate micropip-installed `protobuf`. Note that the compiled protobuf wasm file in the `v2` directory is called `libprotobuf.so`.
-  
-Demo: https://josephrocca.github.io/onnx-pyodide/demo/v2
-
-<details>
-  <summary><b>Click for build instructions</b></summary>
- 
-```bash
 git clone --branch v21.12 https://github.com/onnx/onnx
 cd onnx
 git submodule update --init --recursive
@@ -85,21 +23,18 @@ PYODIDE_EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version)
 source emsdk_env.sh
 cd ../
 
-# add some extra cmake variables like `set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)` - see the file for the rest, including references to explanations
-curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/509fab5dc03bec8aa598e7fbce16330de94893ca/overwriteProp.cmake > overwriteProp.cmake
-
-# Build wasm version of libprotobuf.so (it should have 'asm' near the start when you view it as text, not 'arch')
+# Build wasm version of protobuf
 git clone https://github.com/protocolbuffers/protobuf.git protobuf-wasm
 cd protobuf-wasm
 git checkout v3.20.2
 git submodule update --init --recursive
 mkdir build_source
-emcmake cmake cmake -B=build_source -DCMAKE_PROJECT_INCLUDE=$(pwd)/../overwriteProp.cmake -Dprotobuf_BUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_POSITION_INDEPENDENT_CODE=ON -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
+emcmake cmake cmake -B=build_source -Dprotobuf_BUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_POSITION_INDEPENDENT_CODE=ON -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
 cd build_source
 emmake make
-sudo env "PATH=$PATH" emmake make install # NOTE: This errors, but I think that's okay because it's after libprotobuf.so has already been built?
+sudo env "PATH=$PATH" emmake make install
 cd ../../
-# mv "$(pwd)/protobuf-wasm/build_source/protoc.js-3.20.2.wasm" "$(pwd)/protobuf-wasm/build_source/libprotobuf.so"
+# cp "$(pwd)/protobuf-wasm/build_source/protoc.js-3.20.2.wasm" "$(pwd)/protobuf-wasm/build_source/libprotobuf.a"
 
 
 # build "real" version of protobuf because we need the protoc binary in PATH
@@ -114,13 +49,16 @@ sudo make install
 cd ../../
 export PATH="$(pwd)/protobuf/build_source:$PATH"
 
+# add some extra cmake variables like `set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)` - see the file for the rest, including references to explanations
+curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/509fab5dc03bec8aa598e7fbce16330de94893ca/overwriteProp.cmake > overwriteProp.cmake
+
 # currently the only edit needed for CMakeLists.txt is to remove `,--exclude-libs,ALL` from line 492 - see explanation here: https://github.com/pyodide/pyodide/issues/3427#issuecomment-1374422693
 curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/ef697fb45c5a00523c266b5265abb11cef2810e7/CMakeLists.txt > CMakeLists.txt
 
-export CMAKE_ARGS="-DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
+export CMAKE_ARGS="-DONNX_USE_PROTOBUF_SHARED_LIBS=OFF \
 -DONNX_USE_LITE_PROTO=OFF \
--DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src \
--DProtobuf_LIBRARIES=$(pwd)/protobuf-wasm/build_source/libprotobuf.so \
+-DProtobuf_INCLUDE_DIR=$(pwd)/protobuf-wasm/src \
+-DProtobuf_LIBRARIES=$(pwd)/protobuf-wasm/build_source/libprotobuf.a \
 -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 \
 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") \
 -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") \
@@ -130,95 +68,5 @@ export CMAKE_ARGS="-DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
 
 # build
 pyodide build --exports whole_archive
-
-##########################
-#  OPTIONAL STUFF BELOW  #
-##########################
-
-# install wabt to inspect generated .so (wasm) file
-sudo apt update
-sudo apt install ninja-build
-git clone --recursive https://github.com/WebAssembly/wabt
-cd wabt
-git submodule update --init
-make
-
-cd dist
-unzip /workspaces/onnx/dist/onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl
-cd ../
-
-/workspaces/onnx/wabt/bin/wasm-objdump --full-contents /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-full-contents.txt
-/workspaces/onnx/wabt/bin/wasm-objdump --details /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-details.txt
-/workspaces/onnx/wabt/bin/wasm-objdump --disassemble /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-disassemble.txt
-/workspaces/onnx/wabt/bin/wasm-objdump --headers /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-headers.txt
-
 ```
-</details>
-  
-Error message:
-
-```
-pyodide.JsException: LinkError: WebAssembly.instantiate(): Import #726 module="env" function="lseek" error: imported function does not match the expected type
-```
-
-<details>
-  <summary><b>Click for full error logs</b></summary>
-  
-```
-Uncaught PythonError: Traceback (most recent call last):
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-  File "/lib/python3.10/asyncio/tasks.py", line 234, in __step
-    result = coro.throw(exc)
-  File "/lib/python3.10/_pyodide/_base.py", line 531, in eval_code_async
-    await CodeRunner(
-  File "/lib/python3.10/_pyodide/_base.py", line 359, in run_async
-    await coroutine
-  File "<exec>", line 8, in <module>
-  File "/lib/python3.10/site-packages/micropip/_micropip.py", line 600, in install
-    await gather(*wheel_promises)
-  File "/lib/python3.10/asyncio/futures.py", line 284, in __await__
-    yield self  # This tells Task to wait for completion.
-  File "/lib/python3.10/asyncio/tasks.py", line 304, in __wakeup
-    future.result()
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-  File "/lib/python3.10/asyncio/tasks.py", line 234, in __step
-    result = coro.throw(exc)
-  File "/lib/python3.10/site-packages/micropip/_micropip.py", line 247, in install
-    await self.load_libraries(target)
-  File "/lib/python3.10/site-packages/micropip/_micropip.py", line 238, in load_libraries
-    await gather(*map(lambda dynlib: loadDynlib(dynlib, False), dynlibs))
-  File "/lib/python3.10/asyncio/futures.py", line 284, in __await__
-    yield self  # This tells Task to wait for completion.
-  File "/lib/python3.10/asyncio/tasks.py", line 304, in __wakeup
-    future.result()
-  File "/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception
-pyodide.JsException: LinkError: WebAssembly.instantiate(): Import #726 module="env" function="lseek" error: imported function does not match the expected type
-
-    at new_error (pyodide.asm.js:10:179954)
-    at pyodide.asm.wasm:0xe78a8
-    at pyodide.asm.wasm:0xee978
-    at method_call_trampoline (pyodide.asm.js:10:229349)
-    at pyodide.asm.wasm:0x1313a1
-    at pyodide.asm.wasm:0x202469
-    at pyodide.asm.wasm:0x16ca9e
-    at pyodide.asm.wasm:0x1318b5
-    at pyodide.asm.wasm:0x1319af
-    at pyodide.asm.wasm:0x131a52
-    at pyodide.asm.wasm:0x1eb770
-    at pyodide.asm.wasm:0x1e579f
-    at pyodide.asm.wasm:0x131a95
-    at pyodide.asm.wasm:0x1ed552
-    at pyodide.asm.wasm:0x1eb1b2
-    at pyodide.asm.wasm:0x1e579f
-    at pyodide.asm.wasm:0x131a95
-    at pyodide.asm.wasm:0xee1af
-    at pyodide.asm.wasm:0xee050
-    at Module.callPyObjectKwargs (pyodide.asm.js:10:123403)
-    at Module.callPyObject (pyodide.asm.js:10:123781)
-    at wrapper (pyodide.asm.js:10:219389)
-```
-</details>
 
