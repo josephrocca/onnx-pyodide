@@ -100,7 +100,23 @@ curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40e
 
 export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=OFF -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf/src -DProtobuf_LIBRARIES=$(pwd)/protobuf/build_source -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") -DCMAKE_PROJECT_INCLUDE=$(pwd)/overwriteProp.cmake -DCMAKE_C_FLAGS=\"-fPIC\" -DCMAKE_CXX_FLAGS=\"-fPIC\""
 
+# build
 pyodide build --exports whole_archive
+
+# install wabt to inspect generated .so (wasm) file
+sudo apt update
+sudo apt install ninja-build
+git clone --recursive https://github.com/WebAssembly/wabt
+cd wabt
+git submodule update --init
+make
+
+cd dist
+unzip /workspaces/onnx/dist/onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl
+cd ../
+
+/workspaces/onnx/wabt/bin/wasm-objdump --headers /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so
+
 ```
 </details>
   
