@@ -193,7 +193,7 @@ pyodide.JsException: TypeError: Cannot read properties of undefined (reading 'ap
 ```
 </details>
 
-* `wabt --details onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-details.txt
-* `wabt --full-contents onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-full-contents.txt
-* `wabt --headers onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-headers.txt
+* `wasm-objdump --details onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-details.txt
+* `wasm-objdump --full-contents onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-full-contents.txt
+* `wasm-objdump --headers onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-headers.txt
 
