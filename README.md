@@ -103,6 +103,11 @@ export CMAKE_ARGS="-DONNX_USE_LITE_PROTO=OFF -DProtobuf_INCLUDE_DIR=$(pwd)/proto
 # build
 pyodide build --exports whole_archive
 
+
+##########################
+#  OPTIONAL STUFF BELOW  #
+##########################
+
 # install wabt to inspect generated .so (wasm) file
 sudo apt update
 sudo apt install ninja-build
@@ -115,7 +120,10 @@ cd dist
 unzip /workspaces/onnx/dist/onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl
 cd ../
 
-/workspaces/onnx/wabt/bin/wasm-objdump --headers /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so
+/workspaces/onnx/wabt/bin/wasm-objdump --full-contents /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-full-contents.txt
+/workspaces/onnx/wabt/bin/wasm-objdump --details /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-details.txt
+/workspaces/onnx/wabt/bin/wasm-objdump --disassemble /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-disassemble.txt
+/workspaces/onnx/wabt/bin/wasm-objdump --headers /workspaces/onnx/dist/onnx/onnx_cpp2py_export.cpython-310-wasm32-emscripten.so > wabt-headers.txt
 
 ```
 </details>
@@ -185,4 +193,7 @@ pyodide.JsException: TypeError: Cannot read properties of undefined (reading 'ap
 ```
 </details>
 
+* `wabt --details onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-details.txt
+* `wabt --full-contents onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-full-contents.txt
+* `wabt --headers onnx_cpp2py_export.cpython-310-wasm32-emscripten.so`: https://gist.github.com/josephrocca/eddca6c494dcbd3d19ecb80602c20e6f/raw/4d1f58da92ea0caa5a9f2d973ce62a573ed9c660/wabt-headers.txt
 
