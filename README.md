@@ -5,7 +5,7 @@ Demo: https://josephrocca.github.io/onnx-pyodide/demo/v3
 
 # Build Instructions
 
-```
+```bash
 git clone --branch v21.12 https://github.com/onnx/onnx
 cd onnx
 git submodule update --init --recursive
