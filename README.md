@@ -97,7 +97,7 @@ mkdir build_source
 emcmake cmake cmake -B=build_source -DCMAKE_PROJECT_INCLUDE=$(pwd)/../overwriteProp.cmake -Dprotobuf_BUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_POSITION_INDEPENDENT_CODE=ON -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
 cd build_source
 emmake make
-sudo env "PATH=$PATH" emmake make install # NOTE: This errors, but that's okay.
+sudo env "PATH=$PATH" emmake make install # NOTE: This errors, but I think that's okay because it's after libprotobuf.so has already been built?
 cd ../../
 # mv "$(pwd)/protobuf-wasm/build_source/protoc.js-3.20.2.wasm" "$(pwd)/protobuf-wasm/build_source/libprotobuf.so"
 
