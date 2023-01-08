@@ -23,7 +23,7 @@ PYODIDE_EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version)
 source emsdk_env.sh
 cd ../
 
-# Build wasm version of protobuf
+# build wasm version of protobuf
 git clone https://github.com/protocolbuffers/protobuf.git protobuf-wasm
 cd protobuf-wasm
 git checkout v3.20.2
@@ -66,7 +66,7 @@ export CMAKE_ARGS="-DONNX_USE_PROTOBUF_SHARED_LIBS=OFF \
 -DCMAKE_C_FLAGS=\"-fPIC\" \
 -DCMAKE_CXX_FLAGS=\"-fPIC\""
 
-# build
-pyodide build --exports whole_archive
+# build - we need whole_archive because: https://github.com/pyodide/pyodide/issues/3427#issuecomment-1374418990
+pyodide build --exports whole_archive 
 ```
 
