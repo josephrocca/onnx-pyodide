@@ -69,5 +69,8 @@ export CMAKE_ARGS="-DONNX_USE_PROTOBUF_SHARED_LIBS=OFF \
 
 # build - we need whole_archive because: https://github.com/pyodide/pyodide/issues/3427#issuecomment-1374418990
 pyodide build --exports whole_archive 
+
+# remove useless files from whl (brings it from ~10mb down to ~1.5mb)
+zip --delete "$(pwd)/dist/onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl" onnx/backend/test/data/\*
 ```
 
