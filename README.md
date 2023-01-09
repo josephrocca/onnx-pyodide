@@ -56,9 +56,10 @@ curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40e
 curl https://gist.githubusercontent.com/josephrocca/9740493cd72e5be587177b31b40ed8f5/raw/ef697fb45c5a00523c266b5265abb11cef2810e7/CMakeLists.txt > CMakeLists.txt
 
 export CMAKE_ARGS="-DONNX_USE_PROTOBUF_SHARED_LIBS=OFF \
--DONNX_USE_LITE_PROTO=OFF \
+-DONNX_USE_LITE_PROTO=ON \
 -DProtobuf_INCLUDE_DIR=$(pwd)/protobuf-wasm/src \
 -DProtobuf_LIBRARIES=$(pwd)/protobuf-wasm/build_source/libprotobuf.a \
+-DProtobuf_LITE_LIBRARY=$(pwd)/protobuf-wasm/build_source/libprotobuf-lite.a \
 -Dpybind11_DIR=$(python -c 'import pybind11 as _; print(_.__path__[0])')/share/cmake/pybind11 \
 -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") \
 -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") \
