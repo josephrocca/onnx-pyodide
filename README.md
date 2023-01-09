@@ -1,5 +1,5 @@
 # ONNX Pyodide
-The `onnx` Python library (not `onnxruntime`, to be clear) running in Pyodide.
+The `onnx` Python library (not `onnxruntime`, to be clear) running in the browser using Pyodide.
 
 Demo: https://josephrocca.github.io/onnx-pyodide/demo/v3
 
