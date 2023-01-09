@@ -6,6 +6,8 @@ The `onnx` Python library (not `onnxruntime`, to be clear) running in the browse
 
 # Build Instructions
 
+For simple/fast reproduction, go to [@onnx/onnx](https://github.com/onnx/onnx/tree/v1.13.0) (change version tag/branch to suit) and start a Codespace, and then past all commands except the initial `git clone ...` and `cd onnx` (since Codespace has effectively already done that for you).
+
 ```bash
 git clone --branch v1.13.0 https://github.com/onnx/onnx
 cd onnx
@@ -75,3 +77,4 @@ pyodide build --exports whole_archive
 zip --delete "$(pwd)/dist/onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl" onnx/backend/test/data/\*
 ```
 
+The output `whl` file will be in the `dist` directory. See the demo link above for an example of how to use it.
