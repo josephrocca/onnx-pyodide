@@ -2,6 +2,7 @@
 The `onnx` Python library (not `onnxruntime`, to be clear) running in the browser using Pyodide.
 
 * Demo: https://josephrocca.github.io/onnx-pyodide/demo/v3
+* Example "application" that uses this: https://github.com/josephrocca/onnxscript-editor
 * `.whl` file: https://raw.githubusercontent.com/josephrocca/onnx-pyodide/main/demo/v3/onnx-1.13.0-cp310-cp310-emscripten_3_1_27_wasm32.whl
 
 # Build Instructions
